@@ -1,16 +1,15 @@
 jQuery(document).ready(function($){
     
-    $('buttonSelector').live('click', function(e){
-        e.preventDefaults();
+    $('#submit-shortcode-api').live('click', function(e){
         
         var shortcodeName = $('#shortcode-name').val(); //hidden field
         var formValsString = " "; //an empty space to start the string
         
-        $('formSelector input[type="text"]').each(function(){
-            formVals += $(this).attr('name') + "="+ $(this).val();
+        $('#wp-shortcode input[type="text"]').each(function(){
+            formValsString += " " + $(this).attr('name') + "="+ $(this).val();
         })
         
-        var shortcodeString = "[ "+ shortcodeName + formValsString +" ]";
+        var shortcodeString = "["+ shortcodeName + formValsString +"]";
         
         var win = window.dialogArguments || opener || parent || top;
         var isVisual = (typeof win.tinyMCE != "undefined") && win.tinyMCE.activeEditor && !win.tinyMCE.activeEditor.isHidden();	

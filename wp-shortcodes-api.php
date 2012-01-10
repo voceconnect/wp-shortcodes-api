@@ -107,6 +107,7 @@ if (!class_exists('WP_Shortcodes_API')) {
 
         private $name;
         private $callback;
+		private $media_button = false;
 
         public function __construct($name, $callback) {
             $this->name = $name;
@@ -149,9 +150,10 @@ if (!class_exists('WP_Shortcodes_API')) {
         public function add_media_button($args) {
             $shortcode_name = $args['shortcode'];
             $title = $args['title'];
+			$icon_url = $args['icon_url'];
             $intro = $args['intro'];
             $input_atts = $args['input_atts'];
-            $media_button = new WP_Shortcodes_Media_Button($shortcode_name, $title, $intro, $input_atts);
+            $this->media_button = new WP_Shortcodes_Media_Button($shortcode_name, $title, $icon_url, $intro, $input_atts);
             return $this;
         }
 
@@ -159,7 +161,87 @@ if (!class_exists('WP_Shortcodes_API')) {
 
 }
 
-
-
-
 require_once('demo_shortcode.php');
+
+class WP_Shortcodes_Media_Button {
+
+	private $title;
+	private $icon_url;
+	private $intro_text;
+	private $sc_args;
+	private $shortcode;
+
+	public function  __construct($shortcode, $title, $icon_url, $intro_text = "", $sc_args = array()) {
+		$this->shortcode = $shortcode;
+		$this->title = $title;
+		$this->icon_url = $icon_url;
+		$this->intro_text = $intro_text;
+		$this->sc_args = $sc_args;
+
+		$this->create_media_buttons();
+	}
+	function create_media_buttons() {
+		add_action('media_buttons',array($this, 'media_button'), 100);
+		add_action('wp_ajax_shortcode_popup', array(&$this, 'popup'));
+	}
+
+	function media_button() {
+		global $post_ID, $temp_ID;
+		$title = __( $this->title, 'wp_shortcodes_api' );
+		$iframe_post_id = (int) ( 0 == $post_ID ? $temp_ID : $post_ID );
+		$site_url = admin_url("/admin-ajax.php?post_id=$iframe_post_id&amp;action=shortcode_popup&amp;TB_iframe=true&amp;width=768");
+		echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'><img src='$this->icon_url' alt='$title' width='15' height='15' /></a>";
+	}
+
+	function popup() {
+		$script_url = plugins_url(dirname(plugin_basename(__FILE__))) . '/wp-shortcodes-api.js';
+		wp_deregister_script('wp-shortcodes');
+		wp_enqueue_script('wp-shortcodes', $script_url, 'jquery');
+		wp_print_scripts(array('jquery','wp-shortcodes'));
+		?>
+		<div class="wp-shortcode-popup">
+			<h4><?php echo $this->title ?></h4>
+			<p><?php echo $this->intro_text ?></p>
+			<?php if ($this->sc_args) : ?>
+			<form id="wp-shortcode" action="" >
+				<?php foreach ($this->sc_args as $arg) : ?>
+				<li>
+					<label for="<?php echo $arg ?>"><?php echo ucwords($arg) ?></label>
+					<input type="text" class="text" name="<?php echo $arg ?>" id="<?php echo $arg ?>" />
+				</li>
+				<?php endforeach; ?>
+				<input type="hidden" id="shortcode-name" value="<?php echo $this->shortcode ?>" />
+			</form>
+			<?php endif; ?>
+			<div class="submit">
+				<input type="button" name="submit-shortcode-api" id="submit-shortcode-api" class="button" value="Insert into Post">
+			</div>
+		</div>
+<?php /*?>
+
+		<table class="wp-shortcode-popup" style="display: table">
+			<thead>
+				<h4><?php echo $this->title ?></h4>
+				<p><?php echo $this->intro_text ?></p>
+			</thead>
+			<tbody>
+				<?php if ($this->sc_args) : ?>
+				<form id="wp-shortcode" action="" >
+					<?php foreach ($this->sc_args as $arg) : ?>
+					<tr>
+						<label for="<?php echo $arg ?>"><?php echo ucwords($arg) ?></label>
+						<input type="text" class="text" name="<?php echo $arg ?>" id="<?php echo $arg ?>" />
+					</tr>
+					<?php endforeach; ?>
+					<input type="hidden" id="shortcode-name" value="<?php echo $this->shortcode ?>" />
+				</form>
+				<?php endif; ?>
+				<div class="submit">
+					<input type="button" name="submit-shortcode-api" id="submit-shortcode-api" class="button" value="Insert into Post">
+				</div>
+			</tbody>
+		</table>
+		<?php */
+		die();
+	}
+}

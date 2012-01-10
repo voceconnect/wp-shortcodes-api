@@ -1,16 +1,15 @@
-<pre>
 <?php
 
 if (class_exists('WP_Shortcodes_API')) {
-    WP_Shortcodes_API::GetInstance()->add_shortcode('demo', 'shortcode_demo')->add_arg('height');
-    var_dump(get_option('_shortcodes'));
+    WP_Shortcodes_API::GetInstance()->add_shortcode('demo', 'shortcode_demo')->add_att('height');
 }
 
-function demo_shortcode($args) {
+function shortcode_demo($atts) {
     extract(shortcode_atts(array(
                 'name' => 'mark',
                 'adjective' => 'awesome',
                     ), $atts));
-
-    return $atts['name'] . " is " . $atts['adjective'];
+    //$name = (isset($atts['name'])) ? 'default' : $atts['name'];
+    
+    //return $name;
 }

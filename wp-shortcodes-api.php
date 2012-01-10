@@ -29,6 +29,8 @@ if (!class_exists('WP_Shortcodes_API')) {
 
         private function __construct() {
             $this->shortcodes = array();
+            $this->add_exisiting_shortcodes_to_storage();
+            add_action('plugins_loaded', array(&$this, 'cleanup_shortcode_storage'), 100);
         }
 
         public function add_shortcode($shortcode_name, $callback) {
@@ -49,10 +51,43 @@ if (!class_exists('WP_Shortcodes_API')) {
 
         public function register_shortcode($shortcode_name) {
             add_shortcode($shortcode_name, $this->get_callback($shortcode_name));
-            //global $shortcode_tags;
-            //var_dump($shortcode_tags);
         }
 
+        private function add_exisiting_shortcodes_to_storage() {
+            global $shortcode_tags;
+            $shortcode_options = get_option(self::$shortcode_options_key);
+            if (is_array($shortcode_tags) && is_array($shortcode_options)) {
+                foreach ($shortcode_tags as $key => $value) {
+                    if (!in_array($key, $shortcode_options)) {
+                        $shortcode_options[$key] = array();
+                        $shortcode_options[$key]['callback'] = $value;
+                    }
+                }
+            }
+            update_option(self::$shortcode_options_key, $shortcode_options);
+        }
+
+        public function cleanup_shortcode_storage() {
+            global $shortcode_tags;
+            $shortcode_options = get_option(self::$shortcode_options_key);
+            if (is_array($shortcode_tags) && is_array($shortcode_options)) {
+                foreach ($shortcode_options as $key => $value) {
+                    if (!array_key_exists($key, $shortcode_tags)) {
+                        unset($shortcode_options[$key]);
+                    }
+                }
+            }
+            update_option(self::$shortcode_options_key, $shortcode_options);
+            var_dump(get_option(self::$shortcode_options_key));
+        }
+
+        public static function GetShortcodeAtts($shortcode_name) {
+            return true;
+        }
+
+        public static function ShortcodeInPost($shortcode, $post_id = null) {
+            return true;
+        }
 
     }
 
@@ -65,24 +100,24 @@ if (!class_exists('WP_Shortcodes_API')) {
             $this->name = $name;
             $this->callback = $callback;
             $this->save_shortcode_data();
-            $this->reset_shortcode_args();
+            $this->reset_shortcode_atts();
         }
 
-        public function add_arg($arg) {
+        public function add_att($att) {
             $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
             if (!isset($shortcode_data[$this->name]))
                 return false;
-            if (!isset($shortcode_data[$this->name]['args']))
-                $shortcode_data[$this->name]['args'] = array();
-            if (!in_array($arg, $shortcode_data[$this->name]['args']))
-                $shortcode_data[$this->name]['args'][] = $arg;
+            if (!isset($shortcode_data[$this->name]['atts']))
+                $shortcode_data[$this->name]['atts'] = array();
+            if (!in_array($att, $shortcode_data[$this->name]['atts']))
+                $shortcode_data[$this->name]['atts'][] = $att;
             $this->save_shortcode_data($shortcode_data);
             return $this;
         }
 
-        private function reset_shortcode_args() {
+        private function reset_shortcode_atts() {
             $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
-            $shortcode_data[$this->name]['args'] = array();
+            $shortcode_data[$this->name]['atts'] = array();
             $this->save_shortcode_data($shortcode_data);
         }
 
@@ -98,10 +133,10 @@ if (!class_exists('WP_Shortcodes_API')) {
             update_option(WP_Shortcodes_API::$shortcode_options_key, $shortcode_data);
             return get_option(WP_Shortcodes_API::$shortcode_options_key);
         }
-        
+
         public function add_media_button($args) {
             //call Caffs class
-            
+
             return $this;
         }
 

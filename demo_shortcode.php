@@ -1,3 +1,4 @@
+<pre>
 <?php
 
 if (class_exists('WP_Shortcodes_API')) {
@@ -8,11 +9,13 @@ if (class_exists('WP_Shortcodes_API')) {
             add_media_button(array(
                 'shortcode' => 'demo',
                 'title' => 'My Demo Title',
+                'icon_url' => null,
                 'intro' => 'This is my demo intro text',
                 'input_atts' => array('name', 'adjective')
             ));
 }
 
+var_dump(get_option('_shortcodes'));
 function shortcode_demo($atts) {
     extract(shortcode_atts(array(
                 'name' => 'mark',
@@ -20,6 +23,5 @@ function shortcode_demo($atts) {
                     ), $atts));
     $name = (isset($atts['name'])) ? $atts['name'] : 'Mark';
     $adjective = (isset($atts['adjective'])) ? $atts['adjective'] : 'Awesome';
-
     return $name . " is " . $adjective;
 }

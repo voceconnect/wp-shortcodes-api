@@ -78,7 +78,6 @@ if (!class_exists('WP_Shortcodes_API')) {
                 }
             }
             update_option(self::$shortcode_options_key, $shortcode_options);
-            var_dump(get_option(self::$shortcode_options_key));
         }
 
         public static function GetShortcodeAtts($shortcode_name) {

@@ -9,7 +9,7 @@ function shortcode_demo($atts) {
                 'name' => 'mark',
                 'adjective' => 'awesome',
                     ), $atts));
-    //$name = (isset($atts['name'])) ? 'default' : $atts['name'];
+    $name = (isset($atts['name'])) ? 'default' : $atts['name'];
     
-    //return $name;
+    return $name;
 }

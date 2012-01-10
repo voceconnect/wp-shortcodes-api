@@ -12,7 +12,18 @@ jQuery(document).ready(function($){
         
         var shortcodeString = "[ "+ shortcodeName + formValsString +" ]";
         
+        var win = window.dialogArguments || opener || parent || top;
+        var isVisual = (typeof win.tinyMCE != "undefined") && win.tinyMCE.activeEditor && !win.tinyMCE.activeEditor.isHidden();	
+        if (isVisual) {
+            win.tinyMCE.activeEditor.execCommand('mceInsertContent', false, shortcodeString);
+        } else {
+            var currentContent = jQuery('#content', window.parent.document).val();
+            if ( typeof currentContent == 'undefined' )
+                currentContent = '';		
+            jQuery( '#content', window.parent.document ).val( currentContent + shortcodeString );
+        }
+        self.parent.tb_remove();
+        
+        
     })
-    // I don't know what the tinyMCE method is but it's probably something like this
-    // editorInstance.sendToEditor(shortcodeString);
 })

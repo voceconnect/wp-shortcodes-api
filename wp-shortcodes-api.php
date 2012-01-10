@@ -81,11 +81,24 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         public static function GetShortcodeAtts($shortcode_name) {
-            return true;
+            $shortcode_options = get_option(self::$shortcode_options_key);
+            if ((isset($shortcode_options[$shortcode_name])) && (!empty($shortcode_options[$shortcode_name]['atts']))) {
+                return $shortcode_options[$shortcode_name]['atts'];
+            } else {
+                return false;
+            }
         }
 
-        public static function ShortcodeInPost($shortcode, $post_id = null) {
-            return true;
+        public static function ShortcodeInPost($shortcode_name, $post_id) {
+            $post = get_post($post_id);
+            if ($post) {
+                $pattern = "(.?)\[($shortcode_name)\b(.*?)(?:(\/))?\](?:(.+?)\[\/\2\])?(.?)";
+                preg_match('/' . $pattern . '/s', $post->post_content, $matches);
+                if (is_array($matches) && isset($matches[2]) && $matches[2] == $shortcode_name) {
+                    return true;
+                }
+            }
+            return false;
         }
 
     }

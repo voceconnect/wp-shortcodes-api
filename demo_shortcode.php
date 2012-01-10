@@ -1,10 +1,11 @@
-<pre>
 <?php
 
 if (class_exists('WP_Shortcodes_API')) {
-    WP_Shortcodes_API::GetInstance()->add_shortcode('demo', 'shortcode_demo')->add_att('name')->add_att('adjective');
+    WP_Shortcodes_API::GetInstance()->
+            add_shortcode('demo', 'shortcode_demo')->
+            add_att('name')->
+            add_att('adjective');
 }
-var_dump(get_option('_shortcodes'));
 function shortcode_demo($atts) {
     extract(shortcode_atts(array(
                 'name' => 'mark',

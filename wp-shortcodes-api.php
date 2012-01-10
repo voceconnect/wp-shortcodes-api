@@ -147,8 +147,11 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         public function add_media_button($args) {
-            //call Caffs class
-
+            $shortcode_name = $args['shortcode'];
+            $title = $args['title'];
+            $intro = $args['intro'];
+            $input_atts = $args['input_atts'];
+            $media_button = new WP_Shortcodes_Media_Button($shortcode_name, $title, $intro, $input_atts);
             return $this;
         }
 

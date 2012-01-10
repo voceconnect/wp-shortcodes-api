@@ -1,4 +1,3 @@
-<pre>
 <?php
 
 if (class_exists('WP_Shortcodes_API')) {
@@ -15,7 +14,6 @@ if (class_exists('WP_Shortcodes_API')) {
             ));
 }
 
-var_dump(get_option('_shortcodes'));
 function shortcode_demo($atts) {
     extract(shortcode_atts(array(
                 'name' => 'mark',

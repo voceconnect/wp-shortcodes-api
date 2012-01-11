@@ -29,6 +29,7 @@ if (!class_exists('WP_Shortcodes_API')) {
             $this->shortcodes = array();
             $this->add_exisiting_shortcodes_to_storage();
             add_action('plugins_loaded', array(&$this, 'cleanup_shortcode_storage'), 100);
+            add_action('wp_ajax_get_shortcode_names', array(__CLASS__, 'AjaxGetShortcodeNames'));
         }
 
         /**
@@ -46,7 +47,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             return $shortcode;
         }
 
-
         /**
          * Get the callback function for the shortcode from the option field.
          * @param string $shortcode_name
@@ -59,7 +59,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             return $shortcode_options[$shortcode_name]['callback'];
         }
 
-        
         /**
          * Sends the shortcode and callback to the native WP shortcode API
          * @param string $shortcode_name 
@@ -68,7 +67,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             add_shortcode($shortcode_name, $this->get_callback($shortcode_name));
         }
 
-        
         /**
          * Add the shortcodes registered to our API into the DB option
          * @global array $shortcode_tags All of the shortcodes registered in WP
@@ -87,7 +85,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             update_option(self::$shortcode_options_key, $shortcode_options);
         }
 
-        
         /**
          * Remove any shortcode entries in the DB that are no longer known by WP
          * @global array $shortcode_tags All of the shortcodes registered in WP
@@ -105,7 +102,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             update_option(self::$shortcode_options_key, $shortcode_options);
         }
 
-        
         /**
          * Return the array of attributes associated with the shortcode.
          * @param string $shortcode_name
@@ -120,7 +116,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             }
         }
 
-        
         /**
          * Check to see if the shortcode exists in the post content
          * @param string $shortcode_name
@@ -139,6 +134,12 @@ if (!class_exists('WP_Shortcodes_API')) {
             return false;
         }
 
+        public static function AjaxGetShortcodeNames() {
+            global $shortcode_names;
+            return $shortcode_names;
+            die();
+        }
+
     }
 
     class Add_Shortcode {
@@ -154,7 +155,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             $this->reset_shortcode_atts();
         }
 
-        
         /**
          *
          * @param string $att Shortcode attribute
@@ -181,7 +181,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             $this->save_shortcode_data($shortcode_data);
         }
 
-        
         /**
          *
          * @param type $shortcode_data
@@ -200,14 +199,13 @@ if (!class_exists('WP_Shortcodes_API')) {
             return get_option(WP_Shortcodes_API::$shortcode_options_key);
         }
 
-        
         /**
          *
          * @param array $args
          * @return \Add_Shortcode 
          */
         public function add_media_button($args) {
-            if(!is_array($args))
+            if (!is_array($args))
                 return false;
             $shortcode_name = $args['shortcode'];
             $title = $args['title'];
@@ -219,14 +217,13 @@ if (!class_exists('WP_Shortcodes_API')) {
             return $this;
         }
 
-        
         /**
          *
          * @param string $icon_url 
          */
         private function store_shortcode_icon($icon_url) {
             $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
-            if(empty($icon_url) && isset($shortcode_data[$this->name]['icon_url']))
+            if (empty($icon_url) && isset($shortcode_data[$this->name]['icon_url']))
                 unset($shortcode_data[$this->name]['icon_url']);
             else
                 $shortcode_data[$this->name]['icon_url'] = $icon_url;
@@ -257,7 +254,6 @@ class WP_Shortcodes_Media_Button {
         $this->create_media_buttons();
     }
 
-    
     /**
      * 
      */
@@ -266,7 +262,6 @@ class WP_Shortcodes_Media_Button {
         add_action('wp_ajax_shortcode_popup', array(&$this, 'popup'));
     }
 
-    
     /**
      *
      * @global type $post_ID
@@ -280,7 +275,6 @@ class WP_Shortcodes_Media_Button {
         echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'><img src='$this->icon_url' alt='$title' width='15' height='15' /></a>";
     }
 
-    
     /**
      * 
      */
@@ -289,20 +283,31 @@ class WP_Shortcodes_Media_Button {
         wp_deregister_script('wp-shortcodes');
         wp_enqueue_script('wp-shortcodes', $script_url, 'jquery');
         wp_print_scripts(array('jquery', 'wp-shortcodes'));
+        wp_enqueue_style( 'colors' );
+        wp_enqueue_style( 'ie' );
+        do_action('admin_print_styles');
         ?>
-        <div class="wp-shortcode-popup">
-            <h4><?php echo $this->title ?></h4>
-            <p><?php echo $this->intro_text ?></p>
+        <div class="wp-shortcode-popup wrap" style="padding: 10px 20px;">
+            <h2 id="shortcode-title"><?php echo $this->title ?></h2>
+            <p id="shortcode-intro"><?php echo $this->intro_text ?></p>
             <?php if ($this->sc_args) : ?>
-                <form id="wp-shortcode" action="" >
-                    <?php foreach ($this->sc_args as $arg) : ?>
-                        <li>
-                            <label for="<?php echo $arg ?>"><?php echo ucwords($arg) ?></label>
-                            <input type="text" class="text" name="<?php echo $arg ?>" id="<?php echo $arg ?>" />
-                        </li>
-                    <?php endforeach; ?>
-                    <input type="hidden" id="shortcode-name" value="<?php echo $this->shortcode ?>" />
-                </form>
+                <table class="form-table">    
+                    <form id="wp-shortcode" action="" >
+                        <tbody>
+                            <?php foreach ($this->sc_args as $arg) : ?>
+                                <tr valign="top">        
+                                    <th scopt="row">
+                                        <label for="<?php echo $arg ?>"><?php echo ucwords($arg) ?></label>
+                                    </th>
+                                    <td>
+                                        <input type="text" class="text" name="<?php echo $arg ?>" id="<?php echo $arg ?>" />
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <input type="hidden" id="shortcode-name" value="<?php echo $this->shortcode ?>" />
+                    </form>
+                    </tbody>
+                </table>
             <?php endif; ?>
             <div class="submit">
                 <input type="button" name="submit-shortcode-api" id="submit-shortcode-api" class="button" value="Insert into Post">
@@ -313,3 +318,4 @@ class WP_Shortcodes_Media_Button {
     }
 
 }
+

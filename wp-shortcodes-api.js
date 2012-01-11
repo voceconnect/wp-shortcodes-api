@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
         var formValsString = "";
         $('#wp-shortcode input[type="text"]').each(function(){
             if($(this).val().length){
-                formValsString += " " + $(this).attr('name').trim() + "="+ $(this).val().trim();
+                formValsString += " " + $(this).attr('name').trim() + "='"+ $(this).val().trim()+"'";
             }
         })
         return formValsString;

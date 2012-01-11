@@ -248,7 +248,7 @@ if (!class_exists('WP_Shortcodes_API')) {
 
         function create_media_buttons() {
             add_action('media_buttons', array($this, 'media_button'), 100);
-            add_action('wp_ajax_shortcode_popup', array($this, 'popup'));
+            add_action('wp_ajax_shortcode_popup-'.$this->shortcode, array($this, 'popup'));
         }
 
         /**
@@ -258,9 +258,9 @@ if (!class_exists('WP_Shortcodes_API')) {
          */
         function media_button() {
             global $post_ID, $temp_ID;
-            $title = __($this->title, 'wp_shortcodes_api');
+            $title = $this->title;
             $iframe_post_id = (int) ( 0 == $post_ID ? $temp_ID : $post_ID );
-            $site_url = admin_url("/admin-ajax.php?post_id=$iframe_post_id&amp;action=shortcode_popup&amp;TB_iframe=true&amp;width=768");
+            $site_url = admin_url("/admin-ajax.php?post_id=$iframe_post_id&amp;action=shortcode_popup-$this->shortcode&amp;TB_iframe=true&amp;width=768");
             echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'><img src='$this->icon_url' alt='$title' width='15' height='15' /></a>";
         }
 

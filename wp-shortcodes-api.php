@@ -29,7 +29,6 @@ if (!class_exists('WP_Shortcodes_API')) {
             $this->shortcodes = array();
             $this->add_exisiting_shortcodes_to_storage();
             add_action('plugins_loaded', array(&$this, 'cleanup_shortcode_storage'), 100);
-            add_action('wp_ajax_get_shortcode_names', array(__CLASS__, 'AjaxGetShortcodeNames'));
         }
 
         /**
@@ -132,12 +131,6 @@ if (!class_exists('WP_Shortcodes_API')) {
                 }
             }
             return false;
-        }
-
-        public static function AjaxGetShortcodeNames() {
-            global $shortcode_names;
-            return $shortcode_names;
-            die();
         }
 
     }
@@ -283,8 +276,8 @@ class WP_Shortcodes_Media_Button {
         wp_deregister_script('wp-shortcodes');
         wp_enqueue_script('wp-shortcodes', $script_url, 'jquery');
         wp_print_scripts(array('jquery', 'wp-shortcodes'));
-        wp_enqueue_style( 'colors' );
-        wp_enqueue_style( 'ie' );
+        wp_enqueue_style('colors');
+        wp_enqueue_style('ie');
         do_action('admin_print_styles');
         ?>
         <div class="wp-shortcode-popup wrap" style="padding: 10px 20px;">
@@ -315,6 +308,16 @@ class WP_Shortcodes_Media_Button {
         </div>
         <?php
         die();
+    }
+
+    /**
+     * Template Tags 
+     */
+    
+    function shortcode_in_post($shortcode_name, $post_id=0) {
+        $post = &get_post($post_id);
+        $post_id = isset($post->ID) ? $post->ID : (int) $post_id;
+        return WP_Shortcodes_API::ShortcodeInPost($shortcode_name, $post_id);
     }
 
 }

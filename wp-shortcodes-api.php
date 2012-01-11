@@ -246,8 +246,8 @@ class WP_Shortcodes_Media_Button {
 
         $this->create_media_buttons();
     }
-
-    /**
+    
+    /**Handles the creation of the icon and page displayed when the icon is clicked
      * 
      */
     function create_media_buttons() {
@@ -255,7 +255,7 @@ class WP_Shortcodes_Media_Button {
         add_action('wp_ajax_shortcode_popup', array(&$this, 'popup'));
     }
 
-    /**
+    /**Create the media icon
      *
      * @global type $post_ID
      * @global type $temp_ID 
@@ -268,17 +268,22 @@ class WP_Shortcodes_Media_Button {
         echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'><img src='$this->icon_url' alt='$title' width='15' height='15' /></a>";
     }
 
-    /**
+    /**Page displayed in the ThickBox utilitized by the media icon
      * 
      */
     function popup() {
         $script_url = plugins_url(dirname(plugin_basename(__FILE__))) . '/wp-shortcodes-api.js';
-        wp_deregister_script('wp-shortcodes');
+
+		//register scripts
+		wp_deregister_script('wp-shortcodes');
         wp_enqueue_script('wp-shortcodes', $script_url, 'jquery');
         wp_print_scripts(array('jquery', 'wp-shortcodes'));
+
+		//register wp styles
         wp_enqueue_style('colors');
         wp_enqueue_style('ie');
         do_action('admin_print_styles');
+
         ?>
         <div class="wp-shortcode-popup wrap" style="padding: 10px 20px;">
             <h2 id="shortcode-title"><?php echo $this->title ?></h2>

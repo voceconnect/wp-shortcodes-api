@@ -12,7 +12,6 @@
 
 if (!class_exists('WP_Shortcodes_API')) {
 
-
     class WP_Shortcodes_API {
 
         public static $shortcode_options_key = "_shortcodes";
@@ -32,6 +31,12 @@ if (!class_exists('WP_Shortcodes_API')) {
             add_action('plugins_loaded', array(&$this, 'cleanup_shortcode_storage'), 100);
         }
 
+        /**
+         * Create the shortcode object
+         * @param string $shortcode_name
+         * @param string|array $callback
+         * @return boolean|shortcode object 
+         */
         public function add_shortcode($shortcode_name, $callback) {
             if (isset($this->shortcodes[$shortcode_name]))
                 return false;
@@ -41,6 +46,12 @@ if (!class_exists('WP_Shortcodes_API')) {
             return $shortcode;
         }
 
+
+        /**
+         * Get the callback function for the shortcode from the option field.
+         * @param string $shortcode_name
+         * @return string|array callback function 
+         */
         private function get_callback($shortcode_name) {
             $shortcode_options = get_option(self::$shortcode_options_key);
             if (!$shortcode_options)
@@ -48,10 +59,20 @@ if (!class_exists('WP_Shortcodes_API')) {
             return $shortcode_options[$shortcode_name]['callback'];
         }
 
+        
+        /**
+         * Sends the shortcode and callback to the native WP shortcode API
+         * @param string $shortcode_name 
+         */
         public function register_shortcode($shortcode_name) {
             add_shortcode($shortcode_name, $this->get_callback($shortcode_name));
         }
 
+        
+        /**
+         * Add the shortcodes registered to our API into the DB option
+         * @global array $shortcode_tags All of the shortcodes registered in WP
+         */
         private function add_exisiting_shortcodes_to_storage() {
             global $shortcode_tags;
             $shortcode_options = get_option(self::$shortcode_options_key);
@@ -66,6 +87,11 @@ if (!class_exists('WP_Shortcodes_API')) {
             update_option(self::$shortcode_options_key, $shortcode_options);
         }
 
+        
+        /**
+         * Remove any shortcode entries in the DB that are no longer known by WP
+         * @global array $shortcode_tags All of the shortcodes registered in WP
+         */
         public function cleanup_shortcode_storage() {
             global $shortcode_tags;
             $shortcode_options = get_option(self::$shortcode_options_key);
@@ -79,6 +105,12 @@ if (!class_exists('WP_Shortcodes_API')) {
             update_option(self::$shortcode_options_key, $shortcode_options);
         }
 
+        
+        /**
+         * Return the array of attributes associated with the shortcode.
+         * @param string $shortcode_name
+         * @return boolean|array of shortcode attributes
+         */
         public static function GetShortcodeAtts($shortcode_name) {
             $shortcode_options = get_option(self::$shortcode_options_key);
             if ((isset($shortcode_options[$shortcode_name])) && (!empty($shortcode_options[$shortcode_name]['atts']))) {
@@ -88,6 +120,13 @@ if (!class_exists('WP_Shortcodes_API')) {
             }
         }
 
+        
+        /**
+         * Check to see if the shortcode exists in the post content
+         * @param string $shortcode_name
+         * @param int $post_id
+         * @return boolean 
+         */
         public static function ShortcodeInPost($shortcode_name, $post_id) {
             $post = get_post($post_id);
             if ($post) {
@@ -115,6 +154,12 @@ if (!class_exists('WP_Shortcodes_API')) {
             $this->reset_shortcode_atts();
         }
 
+        
+        /**
+         *
+         * @param string $att Shortcode attribute
+         * @return boolean|\Add_Shortcode 
+         */
         public function add_att($att) {
             $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
             if (!isset($shortcode_data[$this->name]))
@@ -127,12 +172,21 @@ if (!class_exists('WP_Shortcodes_API')) {
             return $this;
         }
 
+        /**
+         * 
+         */
         private function reset_shortcode_atts() {
             $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
             $shortcode_data[$this->name]['atts'] = array();
             $this->save_shortcode_data($shortcode_data);
         }
 
+        
+        /**
+         *
+         * @param type $shortcode_data
+         * @return type 
+         */
         private function save_shortcode_data($shortcode_data = null) {
             if (!$shortcode_data) {
                 $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
@@ -146,7 +200,15 @@ if (!class_exists('WP_Shortcodes_API')) {
             return get_option(WP_Shortcodes_API::$shortcode_options_key);
         }
 
+        
+        /**
+         *
+         * @param array $args
+         * @return \Add_Shortcode 
+         */
         public function add_media_button($args) {
+            if(!is_array($args))
+                return false;
             $shortcode_name = $args['shortcode'];
             $title = $args['title'];
             $icon_url = $args['icon_url'];
@@ -157,6 +219,11 @@ if (!class_exists('WP_Shortcodes_API')) {
             return $this;
         }
 
+        
+        /**
+         *
+         * @param string $icon_url 
+         */
         private function store_shortcode_icon($icon_url) {
             $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
             if(empty($icon_url) && isset($shortcode_data[$this->name]['icon_url']))
@@ -190,11 +257,21 @@ class WP_Shortcodes_Media_Button {
         $this->create_media_buttons();
     }
 
+    
+    /**
+     * 
+     */
     function create_media_buttons() {
         add_action('media_buttons', array($this, 'media_button'), 100);
         add_action('wp_ajax_shortcode_popup', array(&$this, 'popup'));
     }
 
+    
+    /**
+     *
+     * @global type $post_ID
+     * @global type $temp_ID 
+     */
     function media_button() {
         global $post_ID, $temp_ID;
         $title = __($this->title, 'wp_shortcodes_api');
@@ -203,6 +280,10 @@ class WP_Shortcodes_Media_Button {
         echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'><img src='$this->icon_url' alt='$title' width='15' height='15' /></a>";
     }
 
+    
+    /**
+     * 
+     */
     function popup() {
         $script_url = plugins_url(dirname(plugin_basename(__FILE__))) . '/wp-shortcodes-api.js';
         wp_deregister_script('wp-shortcodes');

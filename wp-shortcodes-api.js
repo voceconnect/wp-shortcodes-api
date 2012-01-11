@@ -22,7 +22,5 @@ jQuery(document).ready(function($){
             jQuery( '#content', window.parent.document ).val( currentContent + shortcodeString );
         }
         self.parent.tb_remove();
-        
-        
     })
 })

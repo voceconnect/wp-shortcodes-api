@@ -37,7 +37,7 @@ jQuery(document).ready(function($){
         self.parent.tb_remove();
     })
     
-    $('#wp-shortcode input[type="text"]').live('blur', function(){
+    $('#wp-shortcode input[type="text"]').live('keyup', function(){
         var preview = build_shortcode();
         $('#shortcode-preview').text(preview);
     })

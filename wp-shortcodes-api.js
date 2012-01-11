@@ -6,7 +6,7 @@ jQuery(document).ready(function($){
         var formValsString = " "; //an empty space to start the string
         
         $('#wp-shortcode input[type="text"]').each(function(){
-            formValsString += " " + $(this).attr('name') + "="+ $(this).val();
+            formValsString += " " + $(this).attr('name').trim() + "="+ $(this).val().trim();
         })
         
         var shortcodeString = "["+ shortcodeName + formValsString +"]";

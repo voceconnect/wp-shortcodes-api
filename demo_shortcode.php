@@ -10,7 +10,7 @@ if (class_exists('WP_Shortcodes_API')) {
                 'title' => 'My Demo Title',
                 'icon_url' => null,
                 'intro' => 'This is my demo intro text',
-                'input_atts' => array('name', 'adjective')
+                'input_atts' => WP_Shortcodes_API::GetShortcodeAtts('demo')
             ));
 }
 

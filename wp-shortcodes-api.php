@@ -246,20 +246,22 @@ class WP_Shortcodes_Media_Button {
 
         $this->create_media_buttons();
     }
-    
-    /**Handles the creation of the icon and page displayed when the icon is clicked
+
+    /*     * Handles the creation of the icon and page displayed when the icon is clicked
      * 
      */
+
     function create_media_buttons() {
         add_action('media_buttons', array($this, 'media_button'), 100);
         add_action('wp_ajax_shortcode_popup', array(&$this, 'popup'));
     }
 
-    /**Create the media icon
+    /*     * Create the media icon
      *
      * @global type $post_ID
      * @global type $temp_ID 
      */
+
     function media_button() {
         global $post_ID, $temp_ID;
         $title = __($this->title, 'wp_shortcodes_api');
@@ -268,31 +270,31 @@ class WP_Shortcodes_Media_Button {
         echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'><img src='$this->icon_url' alt='$title' width='15' height='15' /></a>";
     }
 
-    /**Page displayed in the ThickBox utilitized by the media icon
+    /*     * Page displayed in the ThickBox utilitized by the media icon
      * 
      */
+
     function popup() {
         $script_url = plugins_url(dirname(plugin_basename(__FILE__))) . '/wp-shortcodes-api.js';
 
-		//register scripts
-		wp_deregister_script('wp-shortcodes');
+        //register scripts
+        wp_deregister_script('wp-shortcodes');
         wp_enqueue_script('wp-shortcodes', $script_url, 'jquery');
         wp_print_scripts(array('jquery', 'wp-shortcodes'));
 
-		//register wp styles
+        //register wp styles
         wp_enqueue_style('colors');
         wp_enqueue_style('ie');
         do_action('admin_print_styles');
-
         ?>
         <div class="wp-shortcode-popup wrap" style="padding: 10px 20px;">
             <h2 id="shortcode-title"><?php echo $this->title ?></h2>
             <p id="shortcode-intro"><?php echo $this->intro_text ?></p>
-            <?php if ($this->sc_args) : ?>
-                <table class="form-table">    
-                    <form id="wp-shortcode" action="" >
+        <?php if ($this->sc_args) : ?>
+                <form id="wp-shortcode" action="" >
+                    <table class="form-table">    
                         <tbody>
-                            <?php foreach ($this->sc_args as $arg) : ?>
+            <?php foreach ($this->sc_args as $arg) : ?>
                                 <tr valign="top">        
                                     <th scopt="row">
                                         <label for="<?php echo $arg ?>"><?php echo ucwords($arg) ?></label>
@@ -301,12 +303,12 @@ class WP_Shortcodes_Media_Button {
                                         <input type="text" class="text" name="<?php echo $arg ?>" id="<?php echo $arg ?>" />
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
+            <?php endforeach; ?>
                         <input type="hidden" id="shortcode-name" value="<?php echo $this->shortcode ?>" />
-                    </form>
-                    </tbody>
-                </table>
-            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </form>
+        <?php endif; ?>
             <div class="submit">
                 <input type="button" name="submit-shortcode-api" id="submit-shortcode-api" class="button" value="Insert into Post">
             </div>
@@ -318,8 +320,7 @@ class WP_Shortcodes_Media_Button {
     /**
      * Template Tags 
      */
-    
-    function shortcode_in_post($shortcode_name, $post_id=0) {
+    function shortcode_in_post($shortcode_name, $post_id = 0) {
         $post = &get_post($post_id);
         $post_id = isset($post->ID) ? $post->ID : (int) $post_id;
         return WP_Shortcodes_API::ShortcodeInPost($shortcode_name, $post_id);

@@ -1,18 +1,25 @@
 jQuery(document).ready(function($){
     
-    $('#submit-shortcode-api').live('click', function(e){
-        
-        //hidden field containing our shortcode name
-        var shortcodeName = $('#shortcode-name').val();
+    function get_shortcode_atts(){
         var formValsString = "";
-        
-        // loop through the input fields and create our attributes string
         $('#wp-shortcode input[type="text"]').each(function(){
-            formValsString += " " + $(this).attr('name').trim() + "="+ $(this).val().trim();
+            if($(this).val().length){
+                formValsString += " " + $(this).attr('name').trim() + "="+ $(this).val().trim();
+            }
         })
-        
-        // wrap everything in the shortcode syntax
-        var shortcodeString = "["+ shortcodeName + formValsString +"]";
+        return formValsString;
+    }
+    
+    function build_shortcode(){
+        var shortcodeName = $('#shortcode-name').val();
+        var formValsString = get_shortcode_atts();
+        return "["+ shortcodeName + formValsString +"]";
+    }
+    
+    
+    $('#submit-shortcode-api').live('click', function(e){
+
+        var shortcodeString = build_shortcode();
         
         // insert into the editor
         var win = window.dialogArguments || opener || parent || top;
@@ -28,5 +35,10 @@ jQuery(document).ready(function($){
         
         // close the thickbox
         self.parent.tb_remove();
+    })
+    
+    $('#wp-shortcode input[type="text"]').live('blur', function(){
+        var preview = build_shortcode();
+        $('#shortcode-preview').text(preview);
     })
 })

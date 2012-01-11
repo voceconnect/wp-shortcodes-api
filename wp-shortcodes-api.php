@@ -290,11 +290,11 @@ class WP_Shortcodes_Media_Button {
         <div class="wp-shortcode-popup wrap" style="padding: 10px 20px;">
             <h2 id="shortcode-title"><?php echo $this->title ?></h2>
             <p id="shortcode-intro"><?php echo $this->intro_text ?></p>
-        <?php if ($this->sc_args) : ?>
+            <?php if ($this->sc_args) : ?>
                 <form id="wp-shortcode" action="" >
                     <table class="form-table">    
                         <tbody>
-            <?php foreach ($this->sc_args as $arg) : ?>
+                            <?php foreach ($this->sc_args as $arg) : ?>
                                 <tr valign="top">        
                                     <th scopt="row">
                                         <label for="<?php echo $arg ?>"><?php echo ucwords($arg) ?></label>
@@ -303,12 +303,13 @@ class WP_Shortcodes_Media_Button {
                                         <input type="text" class="text" name="<?php echo $arg ?>" id="<?php echo $arg ?>" />
                                     </td>
                                 </tr>
-            <?php endforeach; ?>
+                            <?php endforeach; ?>
                         <input type="hidden" id="shortcode-name" value="<?php echo $this->shortcode ?>" />
                         </tbody>
                     </table>
                 </form>
-        <?php endif; ?>
+            <?php endif; ?>
+            <code id="shortcode-preview"></code>
             <div class="submit">
                 <input type="button" name="submit-shortcode-api" id="submit-shortcode-api" class="button" value="Insert into Post">
             </div>

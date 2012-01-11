@@ -12,6 +12,9 @@ if (class_exists('WP_Shortcodes_API')) {
                 'intro' => 'This is my demo intro text',
                 'input_atts' => WP_Shortcodes_API::GetShortcodeAtts('demo')
             ));
+} else {
+    // fallback if the plugin is unavailable.
+    add_shortcode('demo', 'shortcode_demo');
 }
 
 function shortcode_demo($atts) {

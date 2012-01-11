@@ -38,8 +38,11 @@ text, and an icon image url.
                 'title' => $thickbox_title,
                 'icon_url' => $button_icon_url,
                 'intro' => $introduction_to_form,
-                'input_atts' => WP_Shortcodes_API::GetShortcodeAtts($shortcode_name')
+                'input_atts' => WP_Shortcodes_API::GetShortcodeAtts($shortcode_name)
             ));
+    } else {
+        // fallback if the plugin is unavailable.
+        add_shortcode($shorcode_name, $callback);
     }`
 
 == Changelog ==

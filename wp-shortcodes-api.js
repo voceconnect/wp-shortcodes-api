@@ -6,9 +6,7 @@ jQuery(document).ready(function($){
     })
 
     var win = window.dialogArguments || opener || parent || top;
-    var selection = win.tinymce.activeEditor.selection.getContent( {
-        'format' : 'text'
-    } );
+    var selection = get_selection();
 
     if(selection){
         var sc = selection.match(/[^\s\[]([^ ]*)[^\] ]/gi);
@@ -18,6 +16,35 @@ jQuery(document).ready(function($){
             $('#wp-shortcode input[type="text"]').keyup();
         }
     }
+
+	function get_selection() {
+		var rng = win.tinymce.activeEditor.selection.getRng(true);
+		if (rng.endOffset == rng.startOffset) {
+			var caret_pos = rng.endOffset;
+			var content = rng.commonAncestorContainer.textContent;
+
+			if (content) {
+				var start_pos = content.lastIndexOf('[',caret_pos);
+				var end_pos = content.indexOf(']',caret_pos) + 1;  //adding 1 so that the bracket is included
+
+				if (start_pos < end_pos) {
+					var selection = content.substring(start_pos,end_pos);
+
+					//checking if any other [ ] characters exist in the selection, if not then return the selection
+					if (selection.indexOf('[',1) < 0 && selection.lastIndexOf(']',selection.length-2)) {
+						return selection;
+					}
+				}
+			} 
+		} else {
+
+			return win.tinymce.activeEditor.selection.getContent( {
+							'format' : 'text'
+			} );
+		}
+
+		return '';
+	}
 
     function set_field_val(){
         var shortcode_name = sc[0];

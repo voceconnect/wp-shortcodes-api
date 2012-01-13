@@ -10,47 +10,44 @@ jQuery(document).ready(function($){
 
     if(selection){
         var sc = selection.match(/[^\s\[]([^ ]*)[^\] ]/gi);
-
         if(sc && sc.length){
             set_field_val();
             $('#wp-shortcode input[type="text"]').keyup();
         }
     }
 
-	function get_selection() {
-		var rng = win.tinymce.activeEditor.selection.getRng(true);
-		if (rng.endOffset == rng.startOffset) {
-			var caret_pos = rng.endOffset;
-			var content = rng.commonAncestorContainer.textContent;
+    function get_selection() {
+        var rng = win.tinymce.activeEditor.selection.getRng(true);
+        if (rng.endOffset == rng.startOffset) {
+            var caret_pos = rng.endOffset;
+            var content = rng.commonAncestorContainer.textContent;
 
-			if (content) {
-				var start_pos = content.lastIndexOf('[',caret_pos);
-				var end_pos = content.indexOf(']',caret_pos) + 1;  //adding 1 so that the bracket is included
+            if (content) {
+                var start_pos = content.lastIndexOf('[',caret_pos);
+                var end_pos = content.indexOf(']',caret_pos) + 1;  //adding 1 so that the bracket is included
 
-				if (start_pos < end_pos) {
-					var selection = content.substring(start_pos,end_pos);
+                if (start_pos < end_pos) {
+                    var selection = content.substring(start_pos,end_pos);
 
-					//checking if any other [ ] characters exist in the selection, if not then return the selection
-					if (selection.indexOf('[',1) < 0 && selection.lastIndexOf(']',selection.length-2)) {
+                    //checking if any other [ ] characters exist in the selection, if not then return the selection
+                    if (selection.indexOf('[',1) < 0 && selection.lastIndexOf(']',selection.length-2)) {
 
-						//highlighting the selection so that the text is replaced when the values are modified
-						rng.setStart(rng.commonAncestorContainer, start_pos);
-						rng.setEnd(rng.commonAncestorContainer, end_pos);
-						win.tinymce.activeEditor.selection.setRng(rng);
+                        //highlighting the selection so that the text is replaced when the values are modified
+                        rng.setStart(rng.commonAncestorContainer, start_pos);
+                        rng.setEnd(rng.commonAncestorContainer, end_pos);
+                        win.tinymce.activeEditor.selection.setRng(rng);
+                        return selection;
+                    }
+                }
+            } 
+        } else {
+            return win.tinymce.activeEditor.selection.getContent( {
+                'format' : 'text'
+            } );
+        }
 
-						return selection;
-					}
-				}
-			} 
-		} else {
-
-			return win.tinymce.activeEditor.selection.getContent( {
-							'format' : 'text'
-			} );
-		}
-
-		return '';
-	}
+        return '';
+    }
 
     function set_field_val(){
         var shortcode_name = sc[0];
@@ -63,7 +60,7 @@ jQuery(document).ready(function($){
         if (shortcode_name == selected_shortcode) {
 
             var sc_attrs = selection.match(/([^\s]*=".*?")/gi);
-            if(sc_attrs.length){
+            if(sc_attrs && sc_attrs.length){
                 for(var index in sc_attrs) {
                     current_attr = sc_attrs[index].split('=');
                     current_attr_name = current_attr[0];

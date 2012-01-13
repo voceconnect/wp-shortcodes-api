@@ -32,6 +32,12 @@ jQuery(document).ready(function($){
 
 					//checking if any other [ ] characters exist in the selection, if not then return the selection
 					if (selection.indexOf('[',1) < 0 && selection.lastIndexOf(']',selection.length-2)) {
+
+						//highlighting the selection so that the text is replaced when the values are modified
+						rng.setStart(rng.commonAncestorContainer, start_pos);
+						rng.setEnd(rng.commonAncestorContainer, end_pos);
+						win.tinymce.activeEditor.selection.setRng(rng);
+
 						return selection;
 					}
 				}

@@ -4,18 +4,7 @@ jQuery(document).ready(function($){
         var preview = build_shortcode();
         $('#shortcode-preview').text(preview);
     })
-
-    var win = window.dialogArguments || opener || parent || top;
-    var selection = get_selection();
-
-    if(selection){
-        var sc = selection.match(/[^\s\[]([^ ]*)[^\] ]/gi);
-        if(sc && sc.length){
-            set_field_val();
-            $('#wp-shortcode input[type="text"]').keyup();
-        }
-    }
-
+    
     function get_selection() {
         var rng = win.tinymce.activeEditor.selection.getRng(true);
         if (rng.endOffset == rng.startOffset) {
@@ -47,6 +36,17 @@ jQuery(document).ready(function($){
         }
 
         return '';
+    }
+
+    var win = window.dialogArguments || opener || parent || top;
+    var selection = get_selection();
+
+    if(selection){
+        var sc = selection.match(/[^\s\[]([^ ]*)[^\] ]/gi);
+        if(sc && sc.length){
+            set_field_val();
+            $('#wp-shortcode input[type="text"]').keyup();
+        }
     }
 
     function set_field_val(){

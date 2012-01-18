@@ -237,7 +237,7 @@ if (!class_exists('WP_Shortcodes_API')) {
             $this->shortcode = $shortcode;
             $this->title = $title;
             $this->icon_url = (isset($icon_url)) ? $icon_url : plugins_url(dirname(plugin_basename(__FILE__))) . '/shortcode-icon.png';
-            $this->intro_text = $intro_text;
+            $this->intro_text = esc_attr($intro_text);
             $this->sc_atts = $sc_atts;
             $this->create_media_buttons();
         }
@@ -314,7 +314,7 @@ if (!class_exists('WP_Shortcodes_API')) {
                         </table>
                     </form>
             <?php endif; ?>
-                <code id="shortcode-preview"></code>
+                <p>Preview: <code id="shortcode-preview"></code></p>
                 <div class="submit">
                     <input type="button" name="submit-shortcode-api" id="submit-shortcode-api" class="button" value="Insert into Post">
                 </div>
@@ -327,12 +327,12 @@ if (!class_exists('WP_Shortcodes_API')) {
     /**
      * Template Tags 
      */
-    function shortcode_in_post($shortcode_name, $post_id = 0) {
+    function has_shortcode($shortcode_name, $post_id = 0) {
         $post = &get_post($post_id);
         $post_id = isset($post->ID) ? $post->ID : (int) $post_id;
         return WP_Shortcodes_API::ShortcodeInPost($shortcode_name, $post_id);
     }
 
     require_once('demo_shortcode.php');
-} // end if condition
+} // end if class_exists condition
 

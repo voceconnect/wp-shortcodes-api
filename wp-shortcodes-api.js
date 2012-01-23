@@ -15,7 +15,7 @@ jQuery(document).ready(function($){
                 var start_pos = content.lastIndexOf('[',caret_pos);
                 var end_pos = content.indexOf(']',caret_pos) + 1;  //adding 1 so that the bracket is included
 
-                if (start_pos < end_pos) {
+                if (start_pos >= 0 && start_pos < end_pos) {
                     var selection = content.substring(start_pos,end_pos);
 
                     //checking if any other [ ] characters exist in the selection, if not then return the selection

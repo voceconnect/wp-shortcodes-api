@@ -149,7 +149,7 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         /**
-         *
+         * Add the registered shortcode attribute to the database
          * @param string $att Shortcode attribute
          * @return boolean|\Add_Shortcode 
          */
@@ -166,7 +166,7 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         /**
-         * 
+         * Clear the shortcode attributes
          */
         private function reset_shortcode_atts() {
             $shortcode_data = get_option(WP_Shortcodes_API::$shortcode_options_key);
@@ -175,8 +175,8 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         /**
-         *
-         * @param type $shortcode_data
+         * Add the shortcode data to the database
+         * @param array $shortcode_data
          * @return type 
          */
         private function save_shortcode_data($shortcode_data = null) {
@@ -193,7 +193,7 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         /**
-         *
+         * Create the media button object
          * @param array $args
          * @return \Add_Shortcode 
          */
@@ -211,7 +211,7 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         /**
-         *
+         * Save the icon URL in the database array
          * @param string $icon_url 
          */
         private function store_shortcode_icon($icon_url) {
@@ -252,7 +252,7 @@ if (!class_exists('WP_Shortcodes_API')) {
         }
 
         /**
-         * Create the media icon
+         * Create the media button icon
          * @global int $post_ID
          * @global int $temp_ID 
          */

@@ -333,6 +333,6 @@ if (!class_exists('WP_Shortcodes_API')) {
         return WP_Shortcodes_API::ShortcodeInPost($shortcode_name, $post_id);
     }
 
-    require_once('demo_shortcode.php');
+    // require_once('demo_shortcode.php');
 } // end if class_exists condition
 

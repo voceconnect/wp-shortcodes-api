@@ -202,25 +202,25 @@ if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 			if ( !is_array( $args ) )
 				return false;
 			$shortcode_name = $args['shortcode'];
-			$title = $args['title'];
-			$icon_url = $args['icon_url'];
-			$intro = $args['intro'];
+			$title = esc_attr( $args['title'] );
+			$icon = esc_attr( $args['icon'] );
+			$intro = esc_attr( $args['intro'] );
 			$input_atts = $args['input_atts'];
-			$this->media_button = new WP_Shortcodes_Media_Button( $shortcode_name, $title, $icon_url, $intro, $input_atts );
-			$this->store_shortcode_icon( $icon_url );
+			$this->media_button = new WP_Shortcodes_Media_Button( $shortcode_name, $title, $icon, $intro, $input_atts );
+			$this->store_shortcode_icon( $icon );
 			return $this;
 		}
 
 		/**
 		 * Save the icon URL in the database array
-		 * @param string $icon_url 
+		 * @param string $icon 
 		 */
-		private function store_shortcode_icon( $icon_url ) {
+		private function store_shortcode_icon( $icon ) {
 			$shortcode_data = get_option( WP_Shortcodes_API::$shortcode_options_key );
-			if ( empty( $icon_url ) && isset( $shortcode_data[$this->name]['icon_url'] ) )
-				unset( $shortcode_data[$this->name]['icon_url'] );
+			if ( empty( $icon ) && isset( $shortcode_data[$this->name]['icon'] ) )
+				unset( $shortcode_data[$this->name]['icon'] );
 			else
-				$shortcode_data[$this->name]['icon_url'] = $icon_url;
+				$shortcode_data[$this->name]['icon'] = $icon;
 			$this->save_shortcode_data( $shortcode_data );
 		}
 
@@ -231,15 +231,15 @@ if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 	class WP_Shortcodes_Media_Button {
 
 		private $title;
-		private $icon_url;
+		private $icon;
 		private $intro_text;
 		private $sc_atts;
 		private $shortcode;
 
-		public function __construct( $shortcode, $title, $icon_url, $intro_text = "", $sc_atts = array( ) ) {
+		public function __construct( $shortcode, $title, $icon, $intro_text = "", $sc_atts = array( ) ) {
 			$this->shortcode = $shortcode;
 			$this->title = $title;
-			$this->icon_url = (isset( $icon_url )) ? $icon_url : plugins_url( dirname( plugin_basename( __FILE__ ) ) ) . '/shortcode-icon.png';
+			$this->icon = (!empty( $icon )) ? $icon : plugins_url( dirname( plugin_basename( __FILE__ ) ) ) . '/shortcode-icon.png';
 			$this->intro_text = esc_attr( $intro_text );
 			$this->sc_atts = $sc_atts;
 			$this->create_media_buttons();
@@ -263,10 +263,11 @@ if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 			$title = $this->title;
 			$iframe_post_id = (int) ( 0 == $post_ID ? $temp_ID : $post_ID );
 			$site_url = admin_url( "/admin-ajax.php?post_id=$iframe_post_id&amp;action=shortcode_popup-$this->shortcode&amp;TB_iframe=true&amp;width=768" );
-			$icon = $this->icon_url;
-			$ext = pathinfo( $icon, PATHINFO_EXTENSION );
+			$ext = pathinfo( $this->icon, PATHINFO_EXTENSION );
 			if ( in_array( $ext, array( 'jpg', 'jpeg', 'png', 'gif' ) ) ) {
-				$icon = "<img src='$icon' alt='$title' width='15' height='15' />";
+				$icon = "<img src='$this->icon' alt='$title' width='15' height='15' />";
+			} else {
+				$icon = $this->icon;
 			}
 			echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'>$icon</a>";
 		}

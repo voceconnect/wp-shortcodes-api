@@ -1,5 +1,15 @@
 <?php
 
+function shortcode_demo( $atts ) {
+	extract( shortcode_atts( array(
+				'name' => 'mark',
+				'adjective' => 'awesome',
+					), $atts ) );
+	$name = (isset( $atts['name'] )) ? $atts['name'] : 'Mark';
+	$adjective = (isset( $atts['adjective'] )) ? $atts['adjective'] : 'Awesome';
+	return $name . " is " . $adjective;
+}
+
 if ( class_exists( 'WP_Shortcodes_API' ) ) {
 	WP_Shortcodes_API::GetInstance()->
 			add_shortcode( 'demo', 'shortcode_demo' )->
@@ -16,14 +26,3 @@ if ( class_exists( 'WP_Shortcodes_API' ) ) {
 	// fallback if the plugin is unavailable.
 	add_shortcode( 'demo', 'shortcode_demo' );
 }
-
-function shortcode_demo( $atts ) {
-	extract( shortcode_atts( array(
-				'name' => 'mark',
-				'adjective' => 'awesome',
-					), $atts ) );
-	$name = (isset( $atts['name'] )) ? $atts['name'] : 'Mark';
-	$adjective = (isset( $atts['adjective'] )) ? $atts['adjective'] : 'Awesome';
-	return $name . " is " . $adjective;
-}
-

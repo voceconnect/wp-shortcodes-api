@@ -9,7 +9,6 @@
   Author URI: http://plugins.voceconnect.com/
  */
 
-
 if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 
 	class WP_Shortcodes_API {
@@ -264,7 +263,12 @@ if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 			$title = $this->title;
 			$iframe_post_id = (int) ( 0 == $post_ID ? $temp_ID : $post_ID );
 			$site_url = admin_url( "/admin-ajax.php?post_id=$iframe_post_id&amp;action=shortcode_popup-$this->shortcode&amp;TB_iframe=true&amp;width=768" );
-			echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'><img src='$this->icon_url' alt='$title' width='15' height='15' /></a>";
+			$icon = $this->icon_url;
+			$ext = pathinfo( $icon, PATHINFO_EXTENSION );
+			if ( in_array( $ext, array( 'jpg', 'jpeg', 'png', 'gif' ) ) ) {
+				$icon = "<img src='$icon' alt='$title' width='15' height='15' />";
+			}
+			echo "<a href=$site_url&id=add_form' onclick='return false;' id='popup' class='thickbox' title='$title'>$icon</a>";
 		}
 
 		/**
@@ -298,11 +302,11 @@ if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 			<div class="wp-shortcode-popup wrap" style="padding: 10px 20px;">
 				<h2 id="shortcode-title"><?php echo $title ?></h2>
 				<p id="shortcode-intro"><?php echo $intro_text ?></p>
-							<?php if ( $sc_atts ) : ?>
+				<?php if ( $sc_atts ) : ?>
 					<form id="wp-shortcode" action="" >
 						<table class="form-table">    
 							<tbody>
-				<?php foreach ($sc_atts as $att) : ?>
+								<?php foreach ($sc_atts as $att) : ?>
 									<tr valign="top">        
 										<th scopt="row">
 											<label for="<?php echo $att ?>"><?php echo ucwords( $att ) ?></label>
@@ -311,12 +315,12 @@ if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 											<input type="text" class="text" name="<?php echo $att ?>" id="<?php echo $att ?>" />
 										</td>
 									</tr>
-				<?php endforeach; ?>
+								<?php endforeach; ?>
 							<input type="hidden" id="shortcode-name" value="<?php echo $shortcode ?>" />
 							</tbody>
 						</table>
 					</form>
-			<?php endif; ?>
+				<?php endif; ?>
 				<p>Preview: <code id="shortcode-preview"></code></p>
 				<div class="submit">
 					<input type="button" name="submit-shortcode-api" id="submit-shortcode-api" class="button" value="Insert into Post">
@@ -338,6 +342,5 @@ if ( !class_exists( 'WP_Shortcodes_API' ) ) {
 		return WP_Shortcodes_API::ShortcodeInPost( $shortcode_name, $post_id );
 	}
 
-	// require_once('demo_shortcode.php');
 } // end if class_exists condition
 

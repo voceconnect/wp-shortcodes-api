@@ -1,9 +1,9 @@
 === Plugin Name ===
-Contributors: markparolisi, smccafferty
+Contributors: markparolisi, smccafferty, voceplatforms
 Tags: shortcode
 Requires at least: 3.0
 Tested up to: 3.4.2
-Stable tag: 0.7
+Stable tag: 0.8
 
 Stores information about available shortcodes as an option and provides a method
 to easily add a media button with configurable options.

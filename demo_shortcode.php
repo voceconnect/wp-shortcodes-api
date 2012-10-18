@@ -18,7 +18,7 @@ if ( class_exists( 'WP_Shortcodes_API' ) ) {
 			add_media_button( array(
 				'shortcode' => 'demo',
 				'title' => 'My Demo Title',
-				'icon_url' => null,
+				'icon' => null,
 				'intro' => 'This is my demo intro text',
 				'input_atts' => WP_Shortcodes_API::GetShortcodeAtts( 'demo' )
 			) );

@@ -3,7 +3,7 @@
   Plugin Name: WP Shortcodes API
   Plugin URI: http://plugins.voceconnect.com/
   Description: Advanced Shortcodes.
-  Author: markparolisi
+  Author: markparolisi, voceplatforms
   Contributors: smccafferty
   Version: 0.1
   Author URI: http://plugins.voceconnect.com/

@@ -3,7 +3,7 @@ Contributors: markparolisi, smccafferty
 Tags: shortcode
 Requires at least: 3.0
 Tested up to: 3.4.2
-Stable tag: 0.4
+Stable tag: 0.5
 
 Stores information about available shortcodes as an option and provides a method
 to easily add a media button with configurable options.

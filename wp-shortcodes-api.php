@@ -5,7 +5,7 @@
   Description: Advanced Shortcodes.
   Author: markparolisi, voceplatforms
   Contributors: smccafferty
-  Version: 0.5
+  Version: 0.6
   Author URI: http://plugins.voceconnect.com/
  */
 

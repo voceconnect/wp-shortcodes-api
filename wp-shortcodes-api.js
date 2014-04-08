@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
     
-    $('#wp-shortcode input[type="text"]').live('keyup', function(){
+    $('#wp-shortcode input[type="text"]').on('keyup', function(){
         var preview = build_shortcode();
         $('#shortcode-preview').text(preview);
     })
@@ -98,7 +98,7 @@ jQuery(document).ready(function($){
     }
     
     
-    $('#submit-shortcode-api').live('click', function(e){
+    $('#submit-shortcode-api').on('click', function(e){
 
         var shortcodeString = build_shortcode();
         
